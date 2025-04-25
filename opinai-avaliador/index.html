@@ -1,0 +1,205 @@
+</html><!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpinAi - Avaliação</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px 20px;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      margin-top: 15px;
+      display: block;
+      font-weight: 600;
+      color: #444;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 24px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    .historico {
+      margin-top: 40px;
+    }
+
+    .avaliacao-item {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .estrelas {
+      color: gold;
+      margin-bottom: 4px;
+    }
+
+    .media {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #222;
+    }
+
+    .empresa-info {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      padding: 0 10px 20px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 0 16px;
+        padding: 24px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Avaliação -->
+  <div class="container">
+    <h2>Vamos melhorar por você!</h2>
+    <form id="avaliacaoForm">
+      <label for="nome">Seu nome:</label>
+      <input type="text" id="nome" required>
+
+      <label for="nota">(Estrela de 1 a 5) "1" Pode melhorar "5" Continue assim!</label>
+      <select id="nota" required>
+        <option value="5">★★★★★</option>
+        <option value="4">★★★★☆</option>
+        <option value="3">★★★☆☆</option>
+        <option value="2">★★☆☆☆</option>
+        <option value="1">★☆☆☆☆</option>
+      </select>
+
+      <label for="comentario">Sugestões de melhorias:</label>
+      <textarea id="comentario" rows="4" required></textarea>
+
+      <button type="submit">Enviar Avaliação</button>
+    </form>
+  </div>
+
+  <!-- Histórico e média -->
+  <div class="container historico">
+    <div class="media" id="mediaEstrelas">
+      Média: 0.0 / 5 (0 avaliações)
+    </div>
+    <div id="listaAvaliacoes">
+      <!-- Aqui aparecerão as avaliações -->
+    </div>
+  </div>
+
+  <!-- Informações da empresa -->
+  <div class="empresa-info">
+    <p><strong>Hamburgueria Sabor Prime</strong></p>
+    <p>Estamos há 8 anos no mercado, sempre buscando o melhor para você, cliente amigo.</p>
+  </div>
+
+  <script>
+    const form = document.getElementById('avaliacaoForm');
+    const listaAvaliacoes = document.getElementById('listaAvaliacoes');
+    const mediaEstrelas = document.getElementById('mediaEstrelas');
+
+    let avaliacoes = [];
+
+    function atualizarMedia() {
+      if (avaliacoes.length === 0) {
+        mediaEstrelas.textContent = "Média: 0.0 / 5 (0 avaliações)";
+        return;
+      }
+      const total = avaliacoes.reduce((acc, a) => acc + a.nota, 0);
+      const media = (total / avaliacoes.length).toFixed(1);
+      mediaEstrelas.textContent = Média: ${media} / 5 (${avaliacoes.length} avaliações);
+    }
+
+    function adicionarAvaliacaoHTML(avaliacao) {
+      const div = document.createElement('div');
+      div.className = 'avaliacao-item';
+      div.innerHTML = `
+        <div class="estrelas">${'★'.repeat(avaliacao.nota)}${'☆'.repeat(5 - avaliacao.nota)}</div>
+        <strong>${avaliacao.nome}</strong> - <em>${avaliacao.data}</em><br>
+        <p>${avaliacao.comentario}</p>
+      `;
+      listaAvaliacoes.prepend(div);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById('nome').value;
+      const nota = parseInt(document.getElementById('nota').value);
+      const comentario = document.getElementById('comentario').value;
+      const data = new Date().toLocaleString('pt-BR');
+
+      const avaliacao = { nome, nota, comentario, data };
+      avaliacoes.push(avaliacao);
+
+      adicionarAvaliacaoHTML(avaliacao);
+      atualizarMedia();
+
+      form.reset();
+      alert('Obrigado por sua avaliação!');
+    });
+  </script>
+</body>
+</html>
